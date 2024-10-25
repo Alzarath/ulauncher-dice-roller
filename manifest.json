@@ -1,0 +1,22 @@
+{
+	"required_api_version": "2",
+	"name": "Dice Roller",
+	"description": "Generate a random number based on one or more dice rolls",
+	"developer_name": "Alzarath",
+	"icon": "images/icon.png",
+	"preferences": [
+		{
+			"id": "kw",
+			"type": "keyword",
+			"name": "Dice Roller",
+			"default_value": "roll"
+		},
+		{
+			"id": "default_roll",
+			"type": "input",
+			"name": "Default roll",
+			"description": "Default value to roll",
+			"default_value": "d20"
+		}
+	]
+}
