@@ -25,7 +25,7 @@ class NumericValue[T]:
     def __rsub__(self, other):
         return other - self.value
 
-    def __mult__(self, other):
+    def __mul__(self, other):
         return self.value * other
 
     def __rmul__(self, other):
