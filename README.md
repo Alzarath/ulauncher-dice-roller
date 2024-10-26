@@ -14,7 +14,7 @@ Dice rolling extension for [Ulauncher](https://ulauncher.io/).
 | Symbol  | Name            | Description                                                 | Example | Output  |
 | :-----: | --------------- | ----------------------------------------------------------- | ------- | ------- |
 |  `#d#`  | Dice Roll       | Rolls the first value amount of the second value-sided dice | 2d4     | 2-8     |
-|  `#dF`  | Fudge Dice ROll | Rolls the first value amount of 3-sided dice offset by -2   | 2dF     | -2-2    |
+|  `#dF`  | Fudge Dice Roll | Rolls the first value amount of 3-sided dice offset by -2   | 2dF     | -2-2    |
 |   `+`   | Addition        |                                                             | 1d4+2   | 3-6     |
 |   `-`   | Subtraction     |                                                             | 1d4-2   | -1-2    |
 |   `*`   | Multiplication  |                                                             | 1d4*2   | 2,4,6,8 |
