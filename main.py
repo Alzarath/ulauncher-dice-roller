@@ -200,7 +200,6 @@ def create_segments_from_content(values) -> NumericValueObject:
 
 def render_result(from_string):
     segments = create_segments_from_content(parse_string(from_string))
-    print(segments)
     result = float(str(segments.value))
     if result % 1 == 0:
         result = int(result)
