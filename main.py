@@ -24,7 +24,7 @@ class Operation(Enum):
 class Segment:
     @property
     def value(self) -> float:
-        return_value = self
+        return_value = self.process()
         while hasattr(return_value, 'process'):
             return_value = return_value.process()
         return return_value
@@ -35,39 +35,40 @@ class Segment:
             case Operation.ADD:
                 for value in self.values:
                     return_value += value
+                    print(return_value)
             case Operation.SUBTRACT:
                 if len(self.values) > 0:
-                    return_value += self.values[0]
+                    return_value = self.values[0]
                 for value in self.values[1:]:
                     return_value -= value
             case Operation.MULTIPLY:
                 if len(self.values) > 0:
-                    return_value += self.values[0]
+                    return_value = self.values[0]
                 for value in self.values[1:]:
                     return_value *= value
             case Operation.DIVIDE:
                 if len(self.values) > 0:
-                    return_value += self.values[0]
+                    return_value = self.values[0]
                 for value in self.values[1:]:
                     return_value /= value
             case Operation.MAX:
                 if len(self.values) > 0:
-                    return_value += self.values[0]
+                    return_value = self.values[0].value if hasattr(self.values[0], 'value') else self.values[0]
                 for value in self.values[1:]:
-                    return_value = max(value, return_value)
+                    return_value = max(return_value, value.value if hasattr(value, 'value') else value)
             case Operation.MIN:
                 if len(self.values) > 0:
-                    return_value += self.values[0]
+                    return_value = self.values[0].value if hasattr(self.values[0], 'value') else self.values[0]
                 for value in self.values[1:]:
-                    return_value = min(value, return_value)
+                    return_value = min(return_value, value.value if hasattr(value, 'value') else value)
             case Operation.ROLL:
-                return_value = Segment()
                 if len(self.values) == 1:
                     upper = int(self.values[0].value if hasattr(self.values[0], 'value') else self.values[0])+1
-                    return_value.values.append(random.randrange(1, upper))
+                    return_value = random.randrange(1, upper)
                 elif len(self.values) == 2:
                     count = int(self.values[0].value if hasattr(self.values[0], 'value') else self.values[0])
                     upper = int(self.values[1].value if hasattr(self.values[1], 'value') else self.values[1])+1
+                    return_value = Segment([])
                     for i in range(count):
                         return_value.values.append(random.randrange(1, upper))
                 elif len(self.values) <= 0:
@@ -196,37 +197,10 @@ def parse_string(argument):
 
     return values
 
-def string_to_num(string):
-    string = string.replace(',', '.')
-    
-    try:
-        return int(string)
-    except ValueError:
-        try:
-            return float(string)
-        except ValueError:
-            raise ValueError
-
-def render_result(from_string):
-    result = create_segments_from_content(parse_string(from_string)).value
-    if result % 1 == 0:
-        result = int(result)
-    data = {'roll_string': from_string}        
-
-    return RenderResultListAction([
-        ExtensionResultItem(icon='images/icon.png',
-                            name=f'{result}',
-                            description=f'Number rolled from {from_string} resulted in {result}',
-                            on_enter=CopyToClipboardAction(str(result))),
-        ExtensionResultItem(icon='images/icon.png',
-                            name='Reroll',
-                            description='Reroll using the same values',
-                            on_enter=ExtensionCustomAction(data, keep_app_open=True))
-        ])
-
 def group_dice_content(values) -> None:
     group_operated_content(values, ["d"])
     group_appended_content(values, ["kh", "kl"])
+    split_dice_content(values, ["kh", "kl"])
 
 def group_arithmetic_content(values) -> None:
     group_operated_content(values, ["*", "/"])
@@ -255,6 +229,33 @@ def group_operated_content(values, operators: Iterable, separators = "+-*/") -> 
             values.insert(i+offset, new_value)
         
         i += 1 + offset
+
+def split_dice_content(values, operators: Iterable, separators = "+-*/") -> None:
+    should_process = False
+    if len(values) == 1:
+        inner_values = values[0]
+    else:
+        inner_values = values
+    for value in inner_values:
+        if value in operators:
+            should_process = True
+            break
+
+    if should_process:
+        i = 0
+        new_values = []
+        
+        while i < len(inner_values):
+            value = inner_values[i]
+            if isinstance(value, list) and "d" in value:
+                new_values = []
+                for _ in range(int(value[0]) if len(value) > 2 else 1):
+                    new_values.append([ "d", value[2] if len(value) > 2 else value[1]])
+                inner_values.pop(i)
+                for new_value in new_values:
+                    inner_values.append(new_value)
+            
+            i += 1
 
 def group_appended_content(values, operators: Iterable, separators = "+-*/") -> None:
     i = 0
@@ -302,6 +303,25 @@ def create_segments_from_content(values) -> Segment:
                     segments.append(float(item))
     
     return segments
+
+def render_result(from_string):
+    segments = create_segments_from_content(parse_string(from_string))
+    print(segments)
+    result = segments.value
+    if result % 1 == 0:
+        result = int(result)
+    data = {'roll_string': from_string}        
+
+    return RenderResultListAction([
+        ExtensionResultItem(icon='images/icon.png',
+                            name=f'{result}',
+                            description=f'Number rolled from {from_string} resulted in {result}',
+                            on_enter=CopyToClipboardAction(str(result))),
+        ExtensionResultItem(icon='images/icon.png',
+                            name='Reroll',
+                            description='Reroll using the same values',
+                            on_enter=ExtensionCustomAction(data, keep_app_open=True))
+        ])
 
 class DiceRollerExtension(Extension):
     def __init__(self):
