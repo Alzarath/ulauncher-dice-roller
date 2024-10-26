@@ -35,7 +35,6 @@ class Segment:
             case Operation.ADD:
                 for value in self.values:
                     return_value += value
-                    print(return_value)
             case Operation.SUBTRACT:
                 if len(self.values) > 0:
                     return_value = self.values[0]
@@ -62,15 +61,21 @@ class Segment:
                 for value in self.values[1:]:
                     return_value = min(return_value, value.value if hasattr(value, 'value') else value)
             case Operation.ROLL:
+                lower = 1
+                upper = 2
                 if len(self.values) == 1:
                     upper = int(self.values[0].value if hasattr(self.values[0], 'value') else self.values[0])+1
-                    return_value = random.randrange(1, upper)
+                    return_value = random.randrange(lower, upper)
                 elif len(self.values) == 2:
                     count = int(self.values[0].value if hasattr(self.values[0], 'value') else self.values[0])
-                    upper = int(self.values[1].value if hasattr(self.values[1], 'value') else self.values[1])+1
+                    if self.values[1] == "F":
+                        lower = -1
+                        upper = 2
+                    else:
+                        upper = int(self.values[1].value if hasattr(self.values[1], 'value') else self.values[1])+1
                     return_value = Segment([])
                     for i in range(count):
-                        return_value.values.append(random.randrange(1, upper))
+                        return_value.values.append(random.randrange(lower, upper))
                 elif len(self.values) <= 0:
                     raise ValueError(f"Dice roll expected at least 1 argument, got {len(self.values)}")
                 else:
@@ -300,7 +305,10 @@ def create_segments_from_content(values) -> Segment:
                 if isinstance(item, list):
                     segments.append(create_segments_from_content(item))
                 else:
-                    segments.append(float(item))
+                    try:
+                        segments.append(float(item))
+                    except:
+                        segments.append(item)
     
     return segments
 
