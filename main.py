@@ -139,7 +139,7 @@ def group_appended_content(values, operators: Iterable, separators = "+-*/") -> 
         i += 1 + offset
 
 def create_segments_from_content(values) -> NumericValueObject:
-    if not hasattr(values, '__iter__') or isinstance(values, str):
+    if not isinstance(values, Iterable) or isinstance(values, str):
         return NumericValueObject(float(values))
 
     item: NumericValueObject | None = None
