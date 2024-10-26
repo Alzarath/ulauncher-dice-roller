@@ -1,7 +1,6 @@
 from lib.NumericValueObject import NumericValueObject
 from enum import Enum, auto
 from functools import reduce
-from typing import Self
 
 class Operation(Enum):
     ADD = auto()
@@ -23,7 +22,7 @@ class Segment(NumericValueObject[float]):
     def operation(self, value: Operation):
         self._operation = value
 
-    def process(self) -> NumericValueObject | Self:
+    def process(self) -> NumericValueObject:
         return_value: NumericValueObject = 0.0
         match self.operation:
             case Operation.ADD:
@@ -43,6 +42,6 @@ class Segment(NumericValueObject[float]):
     def append(self, other):
         self.values.append(other)
 
-    def __init__(self, values: list[NumericValueObject | Self] = [], operation: Operation = Operation.ADD) -> None:
+    def __init__(self, values: list[NumericValueObject] = [], operation: Operation = Operation.ADD) -> None:
         self.values = values
         self.operation = operation
