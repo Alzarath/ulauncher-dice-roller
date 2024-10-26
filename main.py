@@ -151,7 +151,10 @@ def create_segments_from_content(values) -> NumericValue:
             try:
                 dice_values.append(int(item))
             except:
-                pass
+                if item == "d":
+                    pass
+                else:
+                    dice_values.append(item)
 
         dice_count: NumericValue = None
         dice_sides: NumericValue = None
