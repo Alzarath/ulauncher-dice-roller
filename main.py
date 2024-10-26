@@ -9,7 +9,7 @@ from ulauncher.api.shared.action.ExtensionCustomAction import ExtensionCustomAct
 from collections.abc import Iterable
 
 from lib.Segment import Segment, Operation
-from lib.NumericValueObject import NumericValueObject
+from lib.NumericValue import NumericValue
 from lib.DiceRoller import DiceRoller, FudgeDiceRoller
 
 def parse_string(argument):
@@ -138,11 +138,11 @@ def group_appended_content(values, operators: Iterable, separators = "+-*/") -> 
 
         i += 1 + offset
 
-def create_segments_from_content(values) -> NumericValueObject:
+def create_segments_from_content(values) -> NumericValue:
     if not isinstance(values, Iterable) or isinstance(values, str):
-        return NumericValueObject(float(values))
+        return NumericValue(float(values))
 
-    item: NumericValueObject | None = None
+    item: NumericValue | None = None
 
     # Determine item type
     if "d" in values:
@@ -153,8 +153,8 @@ def create_segments_from_content(values) -> NumericValueObject:
             except:
                 pass
 
-        dice_count: NumericValueObject = None
-        dice_sides: NumericValueObject = None
+        dice_count: NumericValue = None
+        dice_sides: NumericValue = None
         fudge_dice: bool = False
         if len(dice_values) == 2:
             dice_count = create_segments_from_content(dice_values[0])
@@ -164,7 +164,7 @@ def create_segments_from_content(values) -> NumericValueObject:
             else:
                 dice_sides = create_segments_from_content(dice_values[1])
         elif len(dice_values) == 1:
-            dice_count = NumericValueObject(1)
+            dice_count = NumericValue(1)
 
             if dice_values[0] == "F":
                 fudge_dice = True

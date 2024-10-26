@@ -1,7 +1,7 @@
-class NumericValueObject[T]:
+class NumericValue[T]:
     @property
     def value(self) -> T:
-        """Value that the object represents and that operations are perform on. Can be replaced with more complex logic"""
+        """Value that the object represents and that operations are perform on. Can be replaced with more complex logic."""
         return self._value
     @value.setter
     def value(self, value: T):
@@ -44,31 +44,31 @@ class NumericValueObject[T]:
         return other % self.value
 
     def __lt__(self, other):
-        if isinstance(other, NumericValueObject):
+        if isinstance(other, NumericValue):
             other = other.value
         return self.value < other
 
     def __le__(self, other):
-        if isinstance(other, NumericValueObject):
+        if isinstance(other, NumericValue):
             other = other.value
         return self.value <= other
 
     def __eq__(self, other):
-        if isinstance(other, NumericValueObject):
+        if isinstance(other, NumericValue):
             other = other.value
         return self.value == other
 
     def __ne__(self, other):
-        if isinstance(other, NumericValueObject):
+        if isinstance(other, NumericValue):
             other = other.value
         return self.value != other
 
     def __gt__(self, other):
-        if isinstance(other, NumericValueObject):
+        if isinstance(other, NumericValue):
             other = other.value
         return self.value > other
 
     def __ge__(self, other) -> bool:
-        if isinstance(other, NumericValueObject):
+        if isinstance(other, NumericValue):
             other = other.value
         return self.value >= other

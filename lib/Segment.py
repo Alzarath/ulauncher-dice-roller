@@ -1,4 +1,4 @@
-from lib.NumericValueObject import NumericValueObject
+from lib.NumericValue import NumericValue
 from enum import Enum, auto
 from functools import reduce
 
@@ -10,9 +10,9 @@ class Operation(Enum):
     MAX = auto()
     MIN = auto()
 
-class Segment(NumericValueObject[float]):
+class Segment(NumericValue[float]):
     @property
-    def value(self) -> NumericValueObject:
+    def value(self) -> NumericValue:
         return self.process()
 
     @property
@@ -22,8 +22,8 @@ class Segment(NumericValueObject[float]):
     def operation(self, value: Operation):
         self._operation = value
 
-    def process(self) -> NumericValueObject:
-        return_value: NumericValueObject = 0.0
+    def process(self) -> NumericValue:
+        return_value: NumericValue = 0.0
         match self.operation:
             case Operation.ADD:
                 return_value = reduce(lambda x, y: x + y, self.values)
@@ -42,6 +42,6 @@ class Segment(NumericValueObject[float]):
     def append(self, other):
         self.values.append(other)
 
-    def __init__(self, values: list[NumericValueObject] = [], operation: Operation = Operation.ADD) -> None:
+    def __init__(self, values: list[NumericValue] = [], operation: Operation = Operation.ADD) -> None:
         self.values = values
         self.operation = operation
